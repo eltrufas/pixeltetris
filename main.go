@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	BoardOffsetX = 10
+	BoardOffsetX = 100
 	BoardOffsetY = 470
 	BlockW       = 16
 )
@@ -43,8 +43,21 @@ func (pt *PixelTetris) Render() {
 		pt.RenderBlock(i, value)
 	}
 
-	pt.drawNext()
 	pt.RenderCurrentPiece()
+
+	pt.RenderNext(
+		BoardOffsetX-BlockW*4-10,
+		BoardOffsetY-BlockW*4,
+		pt.T.HoldPiece,
+	)
+
+	for i := 0; i < 6; i++ {
+		pt.RenderNext(
+			BoardOffsetX+BlockW*10+10,
+			BoardOffsetY-(4+i*5)*BlockW,
+			pt.T.PieceQueue[(pt.T.NextIndex+i)%14],
+		)
+	}
 }
 
 func (pt *PixelTetris) RenderCurrentPiece() {
@@ -57,23 +70,71 @@ func (pt *PixelTetris) RenderCurrentPiece() {
 			y := p.Y + i/4 - 2
 			x := p.X + i%4
 
-			pt.RenderBlock(x+y*10, color)
+			if y >= 0 {
+				pt.RenderBlock(x+y*10, color)
+			}
 		}
 	}
 }
 
-func (pt *PixelTetris) drawNext() {
-	r:= pixel.R(
-		float64(BoardOffsetX+BlockW*10+10),
-		float64(BoardOffsetY-4*BlockW),
-		float64(BoardOffsetX+BlockW*14+10),
-		float64(BoardOffsetY),
+func (pt *PixelTetris) RenderNext(x, y, piece int) {
+	r := pixel.R(
+		float64(x),
+		float64(y),
+		float64(x+BlockW*4),
+		float64(y+BlockW*4),
 	)
 	pt.Imd.Color = pixel.RGB(0.2, 0.2, 0.2)
-	
+
 	pt.Imd.Push(r.Min, r.Max)
 	pt.Imd.Rectangle(0)
 
+	if piece < 0 {
+		return
+	}
+
+	mask := tetriscore.Tetrominos[piece][1]
+	pt.Imd.Color = getColor(tetriscore.TetrominoColors[piece])
+
+	for i := 0; i < 16; i++ {
+		if mask[i] == 1 {
+			py := y + (3-i/4)*BlockW
+			px := x + (i%4)*BlockW
+
+			r = pixel.R(
+				float64(px),
+				float64(py),
+				float64(px+BlockW),
+				float64(py+BlockW),
+			)
+
+			pt.Imd.Push(r.Min, r.Max)
+			pt.Imd.Rectangle(0)
+		}
+	}
+}
+
+func getColor(block tetriscore.Block) pixel.RGBA {
+	switch block {
+	case tetriscore.Yellow:
+		return pixel.RGB(1, 0.93, 0.36)
+	case tetriscore.Red:
+		return pixel.RGB(255, 0, 0)
+	case tetriscore.Cyan:
+		return pixel.RGB(0, 255, 255)
+	case tetriscore.Green:
+		return pixel.RGB(0, 255, 0)
+	case tetriscore.Purple:
+		return pixel.RGB(204, 0, 204)
+	case tetriscore.Blue:
+		return pixel.RGB(0, 0, 204)
+	case tetriscore.Orange:
+		return pixel.RGB(255, 128, 0)
+	case tetriscore.Empty:
+		return pixel.RGB(0.2, 0.2, 0.2)
+	default:
+		return pixel.RGB(1, 0, 1)
+	}
 }
 
 func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
@@ -86,26 +147,7 @@ func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
 		float64(BoardOffsetY-BlockW*(y+1)),
 	)
 
-	switch block {
-	case tetriscore.Yellow:
-		pt.Imd.Color = pixel.RGB(1, 0.93, 0.36)
-	case tetriscore.Red:
-		pt.Imd.Color = pixel.RGB(255, 0, 0)
-	case tetriscore.Cyan:
-		pt.Imd.Color = pixel.RGB(0, 255, 255)
-	case tetriscore.Green:
-		pt.Imd.Color = pixel.RGB(0, 255, 0)
-	case tetriscore.Purple:
-		pt.Imd.Color = pixel.RGB(204, 0, 204)
-	case tetriscore.Blue:
-		pt.Imd.Color = pixel.RGB(0, 0, 204)
-	case tetriscore.Orange:
-		pt.Imd.Color = pixel.RGB(255, 128, 0)
-	case tetriscore.Empty:
-		pt.Imd.Color = pixel.RGB(0.2, 0.2, 0.2)
-	default:
-		pt.Imd.Color = pixel.RGB(1, 0, 1)
-	}
+	pt.Imd.Color = getColor(block)
 
 	pt.Imd.Push(r.Min, r.Max)
 	pt.Imd.Rectangle(0)
