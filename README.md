@@ -4,7 +4,7 @@ Implementación de tetris usando la biblioteca Pixel
 Funciones por implementar:
 
 - ~~Colores~~
-- Siguientes 3 piezas
+- ~~Siguientes 3 piezas~~
 - Mostrar puntuación
 - Perder
 - Guapear
