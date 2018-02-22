@@ -6,4 +6,5 @@ Funciones por implementar:
 - Colores
 - Siguiente pieza
 - Mostrar puntuación
+- Perder
 - Guapear

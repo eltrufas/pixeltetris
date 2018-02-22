@@ -106,7 +106,7 @@ func run() {
 
 	var is tetriscore.InputState
 
-	for !win.Closed() {
+	for !win.Closed() && !tetris.T.FlagLoss {
 		target := time.Now().Add(frametime)
 
 		is.Left = win.Pressed(pixelgl.KeyLeft)
@@ -120,6 +120,7 @@ func run() {
 		tetris.Render()
 		tetris.Imd.Draw(win)
 		win.Update()
+
 
 		dt := target.Sub(time.Now())
 		time.Sleep(dt)
