@@ -67,9 +67,17 @@ func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
 	case tetriscore.Yellow:
 		pt.Imd.Color = pixel.RGB(1, 0.93, 0.36)
 	case tetriscore.Red:
-		pt.Imd.Color = pixel.RGB(1, 0.62, 0.56)
+		pt.Imd.Color = pixel.RGB(255, 0, 0)
 	case tetriscore.Cyan:
-		pt.Imd.Color = pixel.RGB(0.51, 1, 0.85)
+		pt.Imd.Color = pixel.RGB(0, 255, 255)
+	case tetriscore.Green:
+		pt.Imd.Color = pixel.RGB(0, 255, 0)
+	case tetriscore.Purple:
+		pt.Imd.Color = pixel.RGB(204, 0, 204)
+	case tetriscore.Blue:
+		pt.Imd.Color = pixel.RGB(0, 0, 204)
+	case tetriscore.Orange:
+		pt.Imd.Color = pixel.RGB(255, 128, 0)
 	case tetriscore.Empty:
 		if i >= 190 {
 			pt.Imd.Color = pixel.RGB(0.8, 0.8, 0.8)
