@@ -23,6 +23,19 @@ type PixelTetris struct {
 	Imd *imdraw.IMDraw
 }
 
+func initInputArray() []pixelgl.Button {
+	inputArray := make([]pixelgl.Button, 0, 32)
+
+	inputArray = append(inputArray, pixelgl.KeyLeft)
+	inputArray = append(inputArray, pixelgl.KeyRight)
+	inputArray = append(inputArray, pixelgl.KeyUp)
+	inputArray = append(inputArray, pixelgl.KeyDown)
+	inputArray = append(inputArray, pixelgl.KeySpace)
+	inputArray = append(inputArray, pixelgl.KeyLeftShift)
+
+	return inputArray
+}
+
 func (pt *PixelTetris) Render() {
 	pt.Imd.Clear()
 	for i := 0; i < 200; i++ {
@@ -112,27 +125,23 @@ func run() {
 
 	frametime, err := time.ParseDuration("16.66ms")
 
-	var is tetriscore.InputState
+	ia := initInputArray()
 
 	for !win.Closed() && !tetris.T.FlagLoss {
 		target := time.Now().Add(frametime)
 
-		is.Left = win.Pressed(pixelgl.KeyLeft)
-		is.Right = win.Pressed(pixelgl.KeyRight)
-		is.Down = win.Pressed(pixelgl.KeyDown)
-		is.Up = win.Pressed(pixelgl.KeyUp) //Rotate piece
-		is.Space = win.Pressed(pixelgl.KeySpace) //Instant placement
-		is.Shift = win.Pressed(pixelgl.KeyLeftShift) //Hold a piece
-		is.Enter = win.Pressed(pixelgl.KeyEnter) //Pause
+		var is tetriscore.InputState
+		for i, input := range ia {
+			if win.Pressed(input) {
+				is |= 1 << uint32(i)
+			}
+		}
 
 		win.Clear(colornames.Aliceblue)
-		if tetris.T.It.Enter == 0 {
-			tetris.T.Update(is)
-		}
+		tetris.T.Update(is)
 		tetris.Render()
 		tetris.Imd.Draw(win)
 		win.Update()
-
 
 		dt := target.Sub(time.Now())
 		time.Sleep(dt)
