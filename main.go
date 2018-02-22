@@ -94,10 +94,6 @@ func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
 	pt.Imd.Rectangle(0)
 }
 
-func (pt *PixelTetris) NextPiece(){
-
-}
-
 func run() {
 	fmt.Println("Lesgo")
 	cfg := pixelgl.WindowConfig{
@@ -124,11 +120,15 @@ func run() {
 		is.Left = win.Pressed(pixelgl.KeyLeft)
 		is.Right = win.Pressed(pixelgl.KeyRight)
 		is.Down = win.Pressed(pixelgl.KeyDown)
-		is.Up = win.Pressed(pixelgl.KeyUp)
-		is.Space = win.Pressed(pixelgl.KeySpace)
+		is.Up = win.Pressed(pixelgl.KeyUp) //Rotate piece
+		is.Space = win.Pressed(pixelgl.KeySpace) //Instant placement
+		is.Shift = win.Pressed(pixelgl.KeyLeftShift) //Hold a piece
+		is.Enter = win.Pressed(pixelgl.KeyEnter) //Pause
 
 		win.Clear(colornames.Aliceblue)
-		tetris.T.Update(is)
+		if tetris.T.It.Enter == 0 {
+			tetris.T.Update(is)
+		}
 		tetris.Render()
 		tetris.Imd.Draw(win)
 		win.Update()
