@@ -15,7 +15,6 @@ const (
 	BoardOffsetX = 10
 	BoardOffsetY = 470
 	BlockW       = 16
-	BlockH       = 16
 )
 
 type PixelTetris struct {
@@ -31,6 +30,7 @@ func (pt *PixelTetris) Render() {
 		pt.RenderBlock(i, value)
 	}
 
+	pt.drawNext()
 	pt.RenderCurrentPiece()
 }
 
@@ -49,7 +49,17 @@ func (pt *PixelTetris) RenderCurrentPiece() {
 	}
 }
 
-func (pt *PixelTetris) RenderNext() {
+func (pt *PixelTetris) drawNext() {
+	r:= pixel.R(
+		float64(BoardOffsetX+BlockW*10+10),
+		float64(BoardOffsetY-4*BlockW),
+		float64(BoardOffsetX+BlockW*14+10),
+		float64(BoardOffsetY),
+	)
+	pt.Imd.Color = pixel.RGB(0.2, 0.2, 0.2)
+	
+	pt.Imd.Push(r.Min, r.Max)
+	pt.Imd.Rectangle(0)
 
 }
 
@@ -58,9 +68,9 @@ func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
 	y := i / 10
 	r := pixel.R(
 		float64(BoardOffsetX+BlockW*x),
-		float64(BoardOffsetY-BlockH*y),
+		float64(BoardOffsetY-BlockW*y),
 		float64(BoardOffsetX+BlockW*(x+1)),
-		float64(BoardOffsetY-BlockH*(y+1)),
+		float64(BoardOffsetY-BlockW*(y+1)),
 	)
 
 	switch block {
@@ -79,13 +89,7 @@ func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
 	case tetriscore.Orange:
 		pt.Imd.Color = pixel.RGB(255, 128, 0)
 	case tetriscore.Empty:
-		if i >= 190 {
-			pt.Imd.Color = pixel.RGB(0.8, 0.8, 0.8)
-		} else if i >= 180 {
-			pt.Imd.Color = pixel.RGB(0.6, 0.6, 0.6)
-		} else {
-			pt.Imd.Color = pixel.RGB(0.2, 0.2, 0.2)
-		}
+		pt.Imd.Color = pixel.RGB(0.2, 0.2, 0.2)
 	default:
 		pt.Imd.Color = pixel.RGB(1, 0, 1)
 	}
