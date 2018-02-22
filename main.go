@@ -94,6 +94,10 @@ func (pt *PixelTetris) RenderBlock(i int, block tetriscore.Block) {
 	pt.Imd.Rectangle(0)
 }
 
+func (pt *PixelTetris) NextPiece(){
+
+}
+
 func run() {
 	fmt.Println("Lesgo")
 	cfg := pixelgl.WindowConfig{
