@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/eltrufas/tetriscore"
+	"math/rand"
 	"time"
 
 	"github.com/faiface/pixel"
@@ -195,5 +196,6 @@ func run() {
 }
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	pixelgl.Run(run)
 }
