@@ -6,7 +6,7 @@ Funciones por implementar:
 - ~~Colores~~
 - ~~Siguientes 3 piezas~~
 - Mostrar puntuación
-- Perder
+- ~~Perder~~
 - Guapear
 - Menú
-- Mostrar Hold Piece
+- ~~Mostrar Hold Piece~~
