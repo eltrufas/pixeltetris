@@ -3,6 +3,8 @@ package context
 import (
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
+
+	"golang.org/x/image/colornames"
 )
 
 type Context struct {
@@ -33,11 +35,15 @@ func (ctx *Context) Update(pressed []bool) {
 }
 
 func (ctx *Context) Render() {
+	ctx.Win.Clear(colornames.Aliceblue)
+	ctx.Imd = imdraw.New(nil)
 	for _, state := range ctx.stateStack {
 		if !state.Render(ctx) {
 			break
 		}
 	}
+	ctx.Imd.Draw(ctx.Win)
+	ctx.Win.Update()
 }
 
 func CreateContext(imd *imdraw.IMDraw, win *pixelgl.Window) *Context {

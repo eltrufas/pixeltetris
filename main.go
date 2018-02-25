@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/eltrufas/pixeltetris/context"
 	"github.com/eltrufas/pixeltetris/game"
 
 	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
-	"golang.org/x/image/colornames"
 )
+
+import _ "net/http/pprof"
 
 func initInputArray() []pixelgl.Button {
 	inputArray := make([]pixelgl.Button, 0, 32)
@@ -39,29 +41,37 @@ func run() {
 		panic(err)
 	}
 
-	ctx := context.CreateContext(imdraw.New(nil), win)
+	ctx := context.CreateContext(nil, win)
 
 	frametime, err := time.ParseDuration("16.66ms")
 
 	ctx.PushState(game.CreateGame())
 
 	ia := initInputArray()
+	pressed := make([]bool, 0, 32)
+	for _, input := range ia {
+		pressed = append(pressed, ctx.Win.Pressed(input))
+	}
 
 	for !win.Closed() {
 		target := time.Now().Add(frametime)
 
-		pressed := make([]bool, 0, 32)
+		start := time.Now()
 
-		for _, input := range ia {
-			pressed = append(pressed, ctx.Win.Pressed(input))
+		for i, input := range ia {
+			if ctx.Win.JustPressed(input) {
+				pressed[i] = true
+			}
+
+			if ctx.Win.JustReleased(input) {
+				pressed[i] = false
+			}
 		}
 
-		win.Clear(colornames.Aliceblue)
 		ctx.Update(pressed)
 		ctx.Render()
 
-		ctx.Imd.Draw(ctx.Win)
-		win.Update()
+		fmt.Println(1 / time.Now().Sub(start).Seconds())
 
 		dt := target.Sub(time.Now())
 		time.Sleep(dt)
@@ -69,6 +79,11 @@ func run() {
 }
 
 func main() {
+	// we need a webserver to get the pprof webserver
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	rand.Seed(time.Now().UTC().UnixNano())
 	pixelgl.Run(run)
 }

@@ -39,17 +39,17 @@ func getColor(block tetriscore.Block) pixel.RGBA {
 	case tetriscore.Yellow:
 		return pixel.RGB(1, 0.93, 0.36)
 	case tetriscore.Red:
-		return pixel.RGB(255, 0, 0)
+		return pixel.RGB(1, 0, 0)
 	case tetriscore.Cyan:
-		return pixel.RGB(0, 255, 255)
+		return pixel.RGB(0, 1, 1)
 	case tetriscore.Green:
-		return pixel.RGB(0, 255, 0)
+		return pixel.RGB(0, 1, 0)
 	case tetriscore.Purple:
-		return pixel.RGB(204, 0, 204)
+		return pixel.RGB(0.8, 0, 0.8)
 	case tetriscore.Blue:
-		return pixel.RGB(0, 0, 204)
+		return pixel.RGB(0, 0, 0.8)
 	case tetriscore.Orange:
-		return pixel.RGB(255, 128, 0)
+		return pixel.RGB(1, 0.5, 0)
 	case tetriscore.Empty:
 		return pixel.RGB(0.2, 0.2, 0.2)
 	default:
