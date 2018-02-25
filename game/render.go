@@ -8,11 +8,11 @@ import (
 
 func (s *State) Render(ctx *context.Context) bool {
 	for i := 0; i < 200; i++ {
-		value := s.T.Board[i+20]
-		s.RenderBlock(ctx, i, value)
+		color := getColor(s.T.Board[i+20])
+		s.RenderBlock(ctx, i, color)
 	}
 
-	s.RenderCurrentPiece(ctx)
+	s.RenderPiece(ctx, s.T.CurrentPiece, 1)
 
 	s.RenderNext(
 		ctx,
@@ -55,10 +55,10 @@ func getColor(block tetriscore.Block) pixel.RGBA {
 	}
 }
 
-func (s *State) RenderCurrentPiece(ctx *context.Context) {
-	p := s.T.CurrentPiece
+func (s *State) RenderPiece(ctx *context.Context, p tetriscore.Piece, alpha float64) {
 	mask := tetriscore.Tetrominos[p.TetrominoType][p.State]
-	color := tetriscore.TetrominoColors[p.TetrominoType]
+	color := getColor(tetriscore.TetrominoColors[p.TetrominoType])
+	color = pixel.Alpha(alpha).Mul(color)
 
 	for i := 0; i < 16; i++ {
 		if mask[i] == 1 {
@@ -109,7 +109,7 @@ func (s *State) RenderNext(ctx *context.Context, x, y, piece int) {
 	}
 }
 
-func (s *State) RenderBlock(ctx *context.Context, i int, block tetriscore.Block) {
+func (s *State) RenderBlock(ctx *context.Context, i int, color pixel.RGBA) {
 	x := i % 10
 	y := i / 10
 	r := pixel.R(
@@ -119,8 +119,7 @@ func (s *State) RenderBlock(ctx *context.Context, i int, block tetriscore.Block)
 		float64(s.OffsetY-s.BlockW*(y+1)),
 	)
 
-	ctx.Imd.Color = getColor(block)
-
+	ctx.Imd.Color = color
 	ctx.Imd.Push(r.Min, r.Max)
 	ctx.Imd.Rectangle(0)
 }
