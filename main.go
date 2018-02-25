@@ -9,25 +9,13 @@ import (
 
 	"github.com/eltrufas/pixeltetris/context"
 	"github.com/eltrufas/pixeltetris/game"
+	"github.com/eltrufas/pixeltetris/input"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 )
 
 import _ "net/http/pprof"
-
-func initInputArray() []pixelgl.Button {
-	inputArray := make([]pixelgl.Button, 0, 32)
-
-	inputArray = append(inputArray, pixelgl.KeyLeft)
-	inputArray = append(inputArray, pixelgl.KeyRight)
-	inputArray = append(inputArray, pixelgl.KeyUp)
-	inputArray = append(inputArray, pixelgl.KeyDown)
-	inputArray = append(inputArray, pixelgl.KeySpace)
-	inputArray = append(inputArray, pixelgl.KeyLeftShift)
-
-	return inputArray
-}
 
 func run() {
 	fmt.Println("Lesgo")
@@ -47,18 +35,17 @@ func run() {
 
 	ctx.PushState(game.CreateGame())
 
-	ia := initInputArray()
 	pressed := make([]bool, 0, 32)
-	for _, input := range ia {
+	for _, input := range input.InputArray {
 		pressed = append(pressed, ctx.Win.Pressed(input))
 	}
 
-	for !win.Closed() {
+	for !win.Closed() && ctx.NotEmpty() {
 		target := time.Now().Add(frametime)
 
 		start := time.Now()
 
-		for i, input := range ia {
+		for i, input := range input.InputArray {
 			if ctx.Win.JustPressed(input) {
 				pressed[i] = true
 			}

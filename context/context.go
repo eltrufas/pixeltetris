@@ -14,7 +14,7 @@ type Context struct {
 }
 
 type State interface {
-	Update([]bool) bool
+	Update(*Context, []bool) bool
 	Render(*Context) bool
 }
 
@@ -26,9 +26,13 @@ func (ctx *Context) PopState() {
 	ctx.stateStack = ctx.stateStack[:len(ctx.stateStack)-1]
 }
 
+func (ctx *Context) NotEmpty() bool {
+	return len(ctx.stateStack) > 0
+}
+
 func (ctx *Context) Update(pressed []bool) {
 	for i := len(ctx.stateStack) - 1; i >= 0; i-- {
-		if !ctx.stateStack[i].Update(pressed) {
+		if !ctx.stateStack[i].Update(ctx, pressed) {
 			break
 		}
 	}
