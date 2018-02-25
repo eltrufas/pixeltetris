@@ -1,7 +1,6 @@
 package game
 
 import "github.com/eltrufas/tetriscore"
-import "fmt"
 
 func (s *State) Update(ia []bool) bool {
 	var is tetriscore.InputState

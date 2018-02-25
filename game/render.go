@@ -14,6 +14,8 @@ func (s *State) Render(ctx *context.Context) bool {
 
 	s.RenderPiece(ctx, s.T.CurrentPiece, 1)
 
+	s.RenderPiece(ctx, s.T.GhostPiece(), 0.5)
+
 	s.RenderNext(
 		ctx,
 		s.OffsetX-s.BlockW*4-10,
