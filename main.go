@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
-	"net/http"
 	"time"
 
 	"github.com/eltrufas/pixeltetris/context"
@@ -14,8 +12,6 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 )
-
-import _ "net/http/pprof"
 
 func run() {
 	fmt.Println("Lesgo")
@@ -43,8 +39,6 @@ func run() {
 	for !win.Closed() && ctx.NotEmpty() {
 		target := time.Now().Add(frametime)
 
-		start := time.Now()
-
 		for i, input := range input.InputArray {
 			if ctx.Win.JustPressed(input) {
 				pressed[i] = true
@@ -55,10 +49,10 @@ func run() {
 			}
 		}
 
+		ctx.StartTimer()
 		ctx.Update(pressed)
 		ctx.Render()
-
-		fmt.Println(1 / time.Now().Sub(start).Seconds())
+		ctx.StopTimer()
 
 		dt := target.Sub(time.Now())
 		time.Sleep(dt)
@@ -66,11 +60,6 @@ func run() {
 }
 
 func main() {
-	// we need a webserver to get the pprof webserver
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-
 	rand.Seed(time.Now().UTC().UnixNano())
 	pixelgl.Run(run)
 }

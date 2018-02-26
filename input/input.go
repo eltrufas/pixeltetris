@@ -9,6 +9,7 @@ const (
 	Down
 	Space
 	Shift
+	Zed
 	Escape
 	Enter
 )
@@ -22,6 +23,7 @@ func initInputArray() []pixelgl.Button {
 	inputArray = append(inputArray, pixelgl.KeyDown)
 	inputArray = append(inputArray, pixelgl.KeySpace)
 	inputArray = append(inputArray, pixelgl.KeyLeftShift)
+	inputArray = append(inputArray, pixelgl.KeyZ)
 	inputArray = append(inputArray, pixelgl.KeyEscape)
 	inputArray = append(inputArray, pixelgl.KeyEnter)
 
