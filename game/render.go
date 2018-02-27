@@ -4,6 +4,9 @@ import (
 	"github.com/eltrufas/pixeltetris/context"
 	"github.com/eltrufas/tetriscore"
 	"github.com/faiface/pixel"
+  "fmt"
+  "golang.org/x/image/colornames"
+	"github.com/faiface/pixel/text"
 )
 
 func (s *State) Render(ctx *context.Context) bool {
@@ -15,6 +18,8 @@ func (s *State) Render(ctx *context.Context) bool {
 	s.RenderPiece(ctx, s.T.CurrentPiece, 1)
 
 	s.RenderPiece(ctx, s.T.GhostPiece(), 0.5)
+
+  s.RenderScore(ctx)
 
 	s.RenderNext(
 		ctx,
@@ -124,4 +129,13 @@ func (s *State) RenderBlock(ctx *context.Context, i int, color pixel.RGBA) {
 	ctx.Imd.Color = color
 	ctx.Imd.Push(r.Min, r.Max)
 	ctx.Imd.Rectangle(0)
+}
+
+func (s *State) RenderScore(ctx *context.Context){
+  txt := text.New(pixel.V(float64(s.OffsetX-s.BlockW*4-10), float64(s.OffsetY-s.BlockW*16)), ctx.Atlas)
+  txt.Color = colornames.Red
+  fmt.Fprintln(txt, "Score: ")
+  fmt.Fprintln(txt, s.T.Score)
+  fmt.Fprintln(txt, "Level: ", s.T.Level)
+  txt.Draw(ctx.Win, pixel.IM)
 }
