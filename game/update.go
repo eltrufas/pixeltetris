@@ -5,6 +5,8 @@ import (
 	"github.com/eltrufas/pixeltetris/input"
 	"github.com/eltrufas/pixeltetris/pausemenu"
 	"github.com/eltrufas/tetriscore"
+  "github.com/eltrufas/rltetris"
+  "fmt"
 )
 
 func (s *State) Update(ctx *context.Context, ia []bool) bool {
@@ -12,15 +14,19 @@ func (s *State) Update(ctx *context.Context, ia []bool) bool {
 		ctx.PushState(&pausemenu.State{})
 	}
 	var is tetriscore.InputState
-	for i, input := range ia {
-		if input {
-			is |= 1 << uint32(i)
-		}
+  is = tetriscore.InputState(rltetris.GetEGreedyAction(s.Weights, s.Game.GetState(), s.Game.LegalAction()))
+
+  s.Action = uint32(is)
+
+	if s.Game.Tetris.FlagLoss {
+		s.Game = rltetris.CreateTetris()
+    s.T = s.Game.Tetris
+    fmt.Println(s.Weights)
+    rltetris.Sarsa(s.Weights, 20000, 0.00001, 0.5)
 	}
 
-	if s.T.FlagLoss {
-		ctx.PopState()
-	}
+
+  s.ShouldPress = !s.ShouldPress
 
 	s.T.Update(is)
 	return true

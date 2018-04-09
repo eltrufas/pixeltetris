@@ -27,7 +27,7 @@ func run() {
 
 	ctx := context.CreateContext(nil, win)
 
-	frametime, err := time.ParseDuration("16.66ms")
+	//frametime, err := time.ParseDuration("0.1ms")
 
 	ctx.PushState(game.CreateGame())
 
@@ -37,7 +37,7 @@ func run() {
 	}
 
 	for !win.Closed() && ctx.NotEmpty() {
-		target := time.Now().Add(frametime)
+		//target := time.Now().Add(frametime)
 
 		for i, input := range input.InputArray {
 			if ctx.Win.JustPressed(input) {
@@ -54,8 +54,8 @@ func run() {
 		ctx.Render()
 		ctx.StopTimer()
 
-		dt := target.Sub(time.Now())
-		time.Sleep(dt)
+		//dt := target.Sub(time.Now())
+		//time.Sleep(dt)
 	}
 }
 

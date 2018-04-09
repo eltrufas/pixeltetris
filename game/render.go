@@ -19,6 +19,13 @@ func (s *State) Render(ctx *context.Context) bool {
 
 	s.RenderPiece(ctx, s.T.GhostPiece(), 0.5)
 
+  txt := text.New(pixel.V(float64(300), float64(300)), ctx.Atlas)
+  txt.Color = colornames.Red
+  fmt.Fprintln(txt, "weights: ", s.Weights)
+  fmt.Fprintln(txt, "Action:  ", s.Action)
+  txt.Draw(ctx.Win, pixel.IM)
+
+
   s.RenderScore(ctx)
 
 	s.RenderNext(
