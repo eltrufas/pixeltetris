@@ -11,6 +11,7 @@ type State struct {
   Game             rltetris.Tetrisrl
   Action           uint32
   ShouldPress      bool
+  Q                [8]float64
 }
 
 func CreateGame() *State {
