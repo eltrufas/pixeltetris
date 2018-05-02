@@ -7,10 +7,10 @@ type State struct {
 	T                *tetriscore.Tetris
 	OffsetX, OffsetY int
 	BlockW           int
-  Weights          map[uint32][]float64
-  Game             rltetris.Tetrisrl
-  Action           uint32
-  ShouldPress      bool
+	Weights          map[uint32][]float64
+	Action           uint32
+	lastAction       tetriscore.InputState
+	player           *rltetris.RemotePlayer
 }
 
 func CreateGame() *State {
@@ -18,14 +18,8 @@ func CreateGame() *State {
 	s.OffsetX = 100
 	s.OffsetY = 470
 	s.BlockW = 16
-  s.Game = rltetris.CreateTetris()
-  s.T = s.Game.Tetris
-  s.Weights = make(map[uint32][]float64)
-  feats := len(s.Game.GetState())
-  for _, a := range s.Game.LegalAction() {
-    s.Weights[a] = make([]float64, feats)
-  }
+	s.T = tetriscore.CreateTetris()
+	s.player = rltetris.CreateRemotePlayer("localhost:5050")
 
-  //rltetris.Sarsa(s.Weights, 1000, 0.3, 1)
 	return &s
 }
